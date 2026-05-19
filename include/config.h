@@ -20,6 +20,7 @@ To be used in other files in /src
 #define BELT_MAXSPEED 1000
 
 /* ------ BELT SENSOR PINS ------ */
+#define BELT_SENSOR_0   19
 #define BELT_SENSOR_1     7   // LQ1_HALL (shared with pump 1)
 #define BELT_SENSOR_2     1  // LQ2_HALL (shared with pump 2) TODO: replace XX with actual pin
 #define BELT_SENSOR_3     4  // LQ3_HALL (shared with pump 3) TODO: replace XX with actual pin
