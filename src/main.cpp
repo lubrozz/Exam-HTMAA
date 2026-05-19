@@ -1,14 +1,35 @@
 #include <Arduino.h>
 #include "userInput.h"
-#include "liquid1_stepper.h"
+#include "belt.h"
+#include "pump.h"
+
+extern int selectedDrink;   // from userInput.cpp
+extern bool startPressed;   // from userInput.cpp
+
+static bool machineRunning = false;
 
 void setup() {
-  Serial.begin(115200);
   userInputInit();
-  liquid1_stepperInit();
+  beltInit();
+  pumpInit();
 }
 
 void loop() {
   userInputUpdate();
-  liquid1_stepperUpdate();
+
+  // Start the machine when green button pressed and drink selected
+  if (startPressed && !machineRunning && beltIdle()) {
+    machineRunning = true;
+    beltStart(selectedDrink);
+  }
+
+  beltUpdate();
+  pumpUpdate();
+
+  // Reset when belt returns home
+  if (machineRunning && beltIdle()) {
+    machineRunning = false;
+    startPressed   = false;
+    selectedDrink  = -1;
+  }
 }
