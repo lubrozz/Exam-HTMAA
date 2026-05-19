@@ -6,7 +6,8 @@
 AccelStepper beltStepper(AccelStepper::DRIVER, BELT_STEP, BELT_DIR);
 
 // Sensor pins in order
-static const int sensorPins[3] = {
+static const int sensorPins[4] = {
+  BELT_SENSOR_0,
   BELT_SENSOR_1,
   BELT_SENSOR_2,
   BELT_SENSOR_3
@@ -33,7 +34,7 @@ static BeltState beltState        = BELT_IDLE; // first state of the belt
 static int selectedDrink          = -1; // no drink selected yet, start at -1
 static int currentPumpTarget      = 0;  // which pump stop we're heading to next (1-3)
 static bool sensorTriggered       = false; // start with sensor not triggered
-static bool lastSensorState[3]    = {LOW, LOW, LOW}; // start all sensors on low - will change later
+static bool lastSensorState[4]    = {LOW, LOW, LOW, LOW}; // start all sensors on low - will change later
 
 // Ice motor timing
 static unsigned long iceStartTime = 0; // used for timing ice dispension
@@ -47,7 +48,7 @@ void beltInit() {
   pinMode(ICE_MOTOR_PIN, OUTPUT);
   digitalWrite(ICE_MOTOR_PIN, LOW);
 
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 4; i++) {
     pinMode(sensorPins[i], INPUT);
   }
 }
@@ -78,7 +79,7 @@ static bool sensorJustTriggered(int sensorIndex) {
 
 void beltUpdate() {
   // Update all sensor states
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 4; i++) {
     sensorJustTriggered(i); // keeps lastSensorState up to date
   }
 
@@ -125,6 +126,7 @@ void beltUpdate() {
           // Not needed for this drink, keep moving
           currentPumpTarget++;
           if (currentPumpTarget > 3) {
+            // NEED: check if the drink is done or move belt back to past pump
             // Past all pumps, go home
             beltStepper.move(BELT_HOME_STEPS);
             beltState = BELT_RETURNING_HOME;

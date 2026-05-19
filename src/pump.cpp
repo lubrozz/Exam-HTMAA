@@ -65,13 +65,6 @@ void pumpDispenseCl(int pumpIndex, int cl) {
   pumpRunning[pumpIndex] = true;
 }
 
-bool pumpIdle() {
-  for (int i = 0; i < 3; i++) {
-    if (pumpRunning[i]) return false;
-  }
-  return true;
-}
-
 void pumpUpdate() {
   for (int i = 0; i < 3; i++) {
     // Update hall sensor LED
