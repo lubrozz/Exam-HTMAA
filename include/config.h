@@ -28,7 +28,7 @@ To be used in other files in /src
 
 /* ------ ICE DISPENSER ------ */
 #define ICE_SENSOR_PIN    3
-#define ICE_SENSOR_LED    24
+#define ICE_SENSOR_LED    22
 #define ICE_MOTOR_PIN     2
 #define ICE_DISPENSE_MS   2000 // how long to run ice motor in ms
 
@@ -41,22 +41,22 @@ To be used in other files in /src
 #define PUMP_TYPES      {PUMP_STEPPER, PUMP_DC, PUMP_STEPPER}
 
 /* ------ LIQUID #1 (Stepper) ------ */
-#define LQ1_HALL        11
-#define LQ1_HALL_LED    10
-#define LQ1_STEP        13
-#define LQ1_DIR         12
+#define LQ1_DIR         6
+#define LQ1_STEP        5
+#define LQ1_HALL        4
+#define LQ1_HALL_LED    24
 
 /* ------ LIQUID #2 (DC Motor) ------ */
-#define LQ2_HALL        1  // TODO: replace with actual pin
-#define LQ2_HALL_LED    2  // TODO: replace with actual pin
-#define LQ2_DC_PIN      3  // TODO: replace with actual pin
+#define LQ2_HALL        7  // TODO: replace with actual pin
+#define LQ2_HALL_LED    26  // TODO: replace with actual pin
+#define LQ2_DC_PIN      8  // TODO: replace with actual pin
 #define DC_MS_PER_CL    500 // TODO: calibrate - ms per cl for DC motor
 
 /* ------ LIQUID #3 (Stepper) ------ */
+#define LQ3_DIR         7  // TODO: replace with actual pin
+#define LQ3_STEP        6  // TODO: replace with actual pin
 #define LQ3_HALL        4  // TODO: replace with actual pin
 #define LQ3_HALL_LED    5  // TODO: replace with actual pin
-#define LQ3_STEP        6  // TODO: replace with actual pin
-#define LQ3_DIR         7  // TODO: replace with actual pin
 
 
 /* ------ DRINK RECIPES ------ */
