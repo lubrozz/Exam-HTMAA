@@ -8,8 +8,8 @@ To be used in other files in /src
 #pragma once
 
 /* ------ USER INPUT AREA ------ */
-#define BUTTON_PINS     {33, 31, 28, 27} // order = blue, red, yellow, green (start)
-#define BUTTON_LEDS     {45, 43, 41, 39} // order = blue, red, yellow, green (start) - placed by button on breadboard
+#define BUTTON_PINS     {43, 42, 28, 27} // order = blue, red, yellow, green (start)
+#define BUTTON_LEDS     {49, 48, 41, 40} // order = blue, red, yellow, green (start) - placed by button on breadboard
 #define COUNT           3       // number of drink buttons (excludes start)
 #define BLINK_INTERVAL  1000
 
