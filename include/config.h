@@ -27,8 +27,9 @@ To be used in other files in /src
 #define BELT_HOME_STEPS   5000 // steps from sensor 3 to home position
 
 /* ------ ICE DISPENSER ------ */
-#define ICE_SENSOR_PIN    19  // TODO: replace XX with actual pin
-#define ICE_MOTOR_PIN     20  // TODO: replace XX with actual pin
+#define ICE_SENSOR_PIN    3
+#define ICE_SENSOR_LED    24
+#define ICE_MOTOR_PIN     2
 #define ICE_DISPENSE_MS   2000 // how long to run ice motor in ms
 
 /* ------ STEPPER LIQUID VARIABLES ------ */
@@ -40,10 +41,10 @@ To be used in other files in /src
 #define PUMP_TYPES      {PUMP_STEPPER, PUMP_DC, PUMP_STEPPER}
 
 /* ------ LIQUID #1 (Stepper) ------ */
-#define LQ1_HALL        7
-#define LQ1_HALL_LED    5
-#define LQ1_STEP        11
-#define LQ1_DIR         10
+#define LQ1_HALL        11
+#define LQ1_HALL_LED    10
+#define LQ1_STEP        13
+#define LQ1_DIR         12
 
 /* ------ LIQUID #2 (DC Motor) ------ */
 #define LQ2_HALL        1  // TODO: replace with actual pin
