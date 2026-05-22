@@ -35,7 +35,7 @@ static unsigned long clToMs(int cl) {
 
 void pumpInit() {
   // Init stepper pumps
-  pump1.setMaxSpeed(1000);
+  pump1.setMaxSpeed(STEPPER_MAX_SPEED);
   pump1.setAcceleration(500);
   // pump3.setMaxSpeed(1000); pump3.setAcceleration(500); // TODO: uncomment when wired
 
@@ -72,7 +72,7 @@ void pumpUpdate() {
     digitalWrite(hallLedPins[i], hallState ? HIGH : LOW);
 
     // Trigger dispense when belt arrives and hall confirms position
-    if (beltAtDestination() && hallState && !hallTriggered[i]) {
+    if (hallState && !hallTriggered[i]) {
       hallTriggered[i] = true;
       // Get cl amount from the current drink recipe
       const int recipes[3][3] = {DRINK_BLUE, DRINK_RED, DRINK_YELLOW};
@@ -96,7 +96,7 @@ void pumpUpdate() {
       // AccelStepper* stepper = (i == 0) ? &pump1 : &pump3; // TODO: when pump3 wired
       if (stepper && stepper->distanceToGo() == 0) {
         pumpRunning[i] = false;
-        beltContinue();
+        //beltContinue();
       }
     }
 
@@ -105,7 +105,7 @@ void pumpUpdate() {
       if (millis() - dcStartTime[i] >= dcDuration[i]) {
         digitalWrite(dcPins[i], LOW);
         pumpRunning[i] = false;
-        beltContinue();
+        //beltContinue();
       }
     }
   }
