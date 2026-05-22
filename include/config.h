@@ -14,26 +14,29 @@ To be used in other files in /src
 #define BLINK_INTERVAL  1000
 
 /* ------ BELT STEPPER ------ */
-#define BELT_STEP 2
-#define BELT_DIR 3
+#define BELT_STEP 9
+#define BELT_DIR 10
 #define BELT_ACCELERATION 500
 #define BELT_MAXSPEED 1000
 
 /* ------ BELT SENSOR PINS ------ */
-#define BELT_SENSOR_0   19
-#define BELT_SENSOR_1     7   // LQ1_HALL (shared with pump 1)
-#define BELT_SENSOR_2     1  // LQ2_HALL (shared with pump 2) TODO: replace XX with actual pin
-#define BELT_SENSOR_3     4  // LQ3_HALL (shared with pump 3) TODO: replace XX with actual pin
+#define BELT_SENSOR_0     3
+#define BELT_SENSOR_1     4   // LQ1_HALL (shared with pump 1)
+#define BELT_SENSOR_2     7  // LQ2_HALL (shared with pump 2) TODO: replace XX with actual pin
+#define BELT_SENSOR_3     13  // LQ3_HALL (shared with pump 3) TODO: replace XX with actual pin
 #define BELT_HOME_STEPS   5000 // steps from sensor 3 to home position
 
 /* ------ ICE DISPENSER ------ */
 #define ICE_SENSOR_PIN    3
 #define ICE_SENSOR_LED    22
 #define ICE_MOTOR_PIN     2
-#define ICE_DISPENSE_MS   2000 // how long to run ice motor in ms
+#define ICE_DISPENSE_MS   4000 // how long to run ice motor in ms
+#define ICE_WAIT_MS 500  // how long to wait at ice dispenser in ms
 
 /* ------ STEPPER LIQUID VARIABLES ------ */
 #define STEPS_PER_2CL   11000  // PRECISELY 2CL DO NOT CHANGE!!
+#define STEPPER_MAX_SPEED 450
+#define PUMP_WAIT_MS 500
 
 /* ------ PUMP TYPES ------ */
 #define PUMP_STEPPER    0
@@ -41,8 +44,8 @@ To be used in other files in /src
 #define PUMP_TYPES      {PUMP_STEPPER, PUMP_DC, PUMP_STEPPER}
 
 /* ------ LIQUID #1 (Stepper) ------ */
-#define LQ1_DIR         6
-#define LQ1_STEP        5
+#define LQ1_DIR         5
+#define LQ1_STEP        6
 #define LQ1_HALL        4
 #define LQ1_HALL_LED    24
 
@@ -53,10 +56,10 @@ To be used in other files in /src
 #define DC_MS_PER_CL    500 // TODO: calibrate - ms per cl for DC motor
 
 /* ------ LIQUID #3 (Stepper) ------ */
-#define LQ3_DIR         7  // TODO: replace with actual pin
-#define LQ3_STEP        6  // TODO: replace with actual pin
-#define LQ3_HALL        4  // TODO: replace with actual pin
-#define LQ3_HALL_LED    5  // TODO: replace with actual pin
+#define LQ3_DIR         11  // TODO: replace with actual pin
+#define LQ3_STEP        12  // TODO: replace with actual pin
+#define LQ3_HALL        13  // TODO: replace with actual pin
+#define LQ3_HALL_LED    28  // TODO: replace with actual pin
 
 
 /* ------ DRINK RECIPES ------ */
