@@ -33,7 +33,14 @@ void loop() {
   }
 
   beltUpdate();
-  //pumpUpdate();
+  pumpUpdate();
+
+  if (beltAtPump())
+  {
+    int pump = beltCurrentPump();
+    int cl = beltGetRecipeCl(selectedDrink, pump - 1);
+    pumpDispenseCl(pump - 1, cl);
+  }
 
   // Reset when belt returns home
   if (machineRunning && beltIdle()) {
