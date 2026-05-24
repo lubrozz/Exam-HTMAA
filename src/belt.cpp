@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <AccelStepper.h>
 #include "belt.h"
+#include "pump.h"
 #include "../include/config.h"
 
 AccelStepper beltStepper(AccelStepper::DRIVER, BELT_STEP, BELT_DIR);
@@ -27,8 +28,9 @@ enum BeltState {
   BELT_WAIT_AT_ICE,
   BELT_AT_ICE,
   BELT_MOVING_TO_PUMP,
-  BELT_WAITING_AT_PUMP,
-  BELT_AT_PUMP
+  BELT_AT_PUMP,
+  BELT_DISPENSING,
+  BELT_RETURNING_HOME
 };
 
 static BeltState beltState        = BELT_IDLE; // first state of the belt
@@ -39,6 +41,18 @@ static unsigned long iceStartTime = 0;
 bool iceRunning = false;
 
 static unsigned long pumpWaitStart = 0;
+
+bool beltAtPump() {
+  return beltState == BELT_DISPENSING;
+}
+
+int beltCurrentPump() {
+  return currentPumpTarget;
+}
+
+int beltGetRecipeCl(int drink, int pump) {
+  return drinkRecipes[drink][pump];
+}
 
 void beltInit() {
   beltStepper.setMaxSpeed(BELT_MAXSPEED);
@@ -68,23 +82,21 @@ bool beltIdle() {
 }
 
 void beltUpdate() {
+  // IMPORTANT: Serial.print() outside if-statements will stall the belt motor!
   switch (beltState) {
     case BELT_IDLE:
       break;
 
     case BELT_MOVING_TO_ICE:
-      Serial.println("Moving to ice");
       beltStepper.run();
       if (digitalRead(sensorPins[0]) == LOW) {
         beltStepper.stop();
-        Serial.println("Belt stopped");
         beltState    = BELT_WAIT_AT_ICE;
         iceWaitStart = millis();
       }
       break;
       
     case BELT_WAIT_AT_ICE:
-      Serial.println("Waiting at ice");
       if (millis() - iceWaitStart >= ICE_WAIT_MS)
       {
         digitalWrite(ICE_MOTOR_PIN, HIGH);
@@ -103,18 +115,17 @@ void beltUpdate() {
         iceRunning      = false;
         currentPumpTarget = 1; // move to first pump
         beltStepper.move(100000);
+        beltState = BELT_MOVING_TO_PUMP; 
       }
-      beltState = BELT_MOVING_TO_PUMP; 
       break;
 
     case BELT_MOVING_TO_PUMP:
-      Serial.println("Moving to a pump");
       beltStepper.run();
-      if (digitalRead(sensorPins[currentPumpTarget]) == LOW)
-      {
-        if (drinkRecipes[selectedDrink][currentPumpTarget - 1] == 1) {
+      if (digitalRead(sensorPins[currentPumpTarget]) == LOW) {
+        if (drinkRecipes[selectedDrink][currentPumpTarget - 1] > 0) {
           beltStepper.stop();
-          beltState       = BELT_WAITING_AT_PUMP;
+          beltState = BELT_AT_PUMP;
+          pumpWaitStart = millis();
         } else {
           // Not needed for this drink, keep moving
           currentPumpTarget++;
@@ -123,17 +134,16 @@ void beltUpdate() {
         // NEED: check if the drink is done or move belt back to past pump
         // Past all pumps, go home
         beltStepper.move(BELT_HOME_STEPS);
+        beltState = BELT_RETURNING_HOME;
       }
-      pumpWaitStart = millis();
-  }
-  break;
-
-  case BELT_WAITING_AT_PUMP:
-    Serial.println("Belt waiting at pump");
-    if (millis() - pumpWaitStart >= PUMP_WAIT_MS )
-    {
-      
-    }
+      }
+      break;
     
-
+    case BELT_AT_PUMP:
+      if (millis() - pumpWaitStart >= PUMP_WAIT_MS )
+      {
+        beltState = BELT_DISPENSING;
+      }
+      break;
+  }
 }

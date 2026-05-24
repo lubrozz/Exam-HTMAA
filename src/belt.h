@@ -3,6 +3,10 @@
 /* Initialize the pins used and their modes.
 Set the max speed and acceleration for the belt 
 */
+
+bool beltAtPump();
+int beltCurrentPump();
+int beltGetRecipeCl(int drink, int pump);
 void beltInit();
 
 /* The main loop 
