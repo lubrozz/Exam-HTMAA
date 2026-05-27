@@ -41,7 +41,7 @@ To be used in other files in /src
 /* ------ PUMP TYPES ------ */
 #define PUMP_STEPPER    0
 #define PUMP_DC         1
-#define PUMP_TYPES      {PUMP_STEPPER, PUMP_DC, PUMP_STEPPER}
+#define PUMP_TYPES      {PUMP_STEPPER, PUMP_DC}
 
 /* ------ LIQUID #1 (Stepper) ------ */
 #define LQ1_DIR         5
@@ -55,16 +55,10 @@ To be used in other files in /src
 #define LQ2_DC_PIN      8  // TODO: replace with actual pin
 #define DC_MS_PER_CL    500 // TODO: calibrate - ms per cl for DC motor
 
-/* ------ LIQUID #3 (Stepper) ------ */
-#define LQ3_DIR         11  // TODO: replace with actual pin
-#define LQ3_STEP        12  // TODO: replace with actual pin
-#define LQ3_HALL        13  // TODO: replace with actual pin
-#define LQ3_HALL_LED    28  // TODO: replace with actual pin
-
 
 /* ------ DRINK RECIPES ------ */
-// values are in cl per pump (pump1, pump2, pump3)
+// values are in cl per pump (pump1, pump2)
 // 0 = skip this pump
-#define DRINK_BLUE      {2, 0, 0}
-#define DRINK_RED       {0, 4, 0}
-#define DRINK_YELLOW    {2, 0, 2}
+#define DRINK_BLUE      {2, 0}
+#define DRINK_RED       {0, 4}
+#define DRINK_YELLOW    {2, 0}

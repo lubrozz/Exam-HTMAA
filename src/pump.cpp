@@ -6,22 +6,21 @@
 
 // ---- Stepper motors ----
 static AccelStepper pump1(AccelStepper::DRIVER, LQ1_STEP, LQ1_DIR);
-// static AccelStepper pump3(AccelStepper::DRIVER, LQ3_STEP, LQ3_DIR); // TODO: uncomment when wired
 
 // ---- Config arrays ----
-static const int pumpTypes[3]   = PUMP_TYPES;
-static const int hallPins[3]    = {LQ1_HALL, LQ2_HALL, LQ3_HALL};
-static const int hallLedPins[3] = {LQ1_HALL_LED, LQ2_HALL_LED, LQ3_HALL_LED};
-static const int dcPins[3]      = {0, LQ2_DC_PIN, 0}; // only DC pumps need this
+static const int pumpTypes[2]   = PUMP_TYPES;
+static const int hallPins[2]    = {LQ1_HALL, LQ2_HALL};
+static const int hallLedPins[2] = {LQ1_HALL_LED, LQ2_HALL_LED};
+static const int dcPins[2]      = {0, LQ2_DC_PIN}; // only DC pumps need this
 
 // ---- State ----
-static bool     pumpRunning[3]    = {false, false, false};
-static bool     hallTriggered[3]  = {false, false, false};
-static bool     lastHallState[3]  = {LOW,   LOW,   LOW};
+static bool     pumpRunning[2]    = {false, false};
+static bool     hallTriggered[2]  = {false, false};
+static bool     lastHallState[2]  = {LOW, LOW};
 
 // DC motor timing
-static unsigned long dcStartTime[3] = {0, 0, 0};
-static unsigned long dcDuration[3]  = {0, 0, 0}; // ms to run, set on dispense
+static unsigned long dcStartTime[2] = {0, 0};
+static unsigned long dcDuration[2]  = {0, 0}; // ms to run, set on dispense
 
 // Helper: convert cl to steps for stepper pumps
 static long clToSteps(int cl) {
