@@ -61,4 +61,4 @@ To be used in other files in /src
 // 0 = skip this pump
 #define DRINK_BLUE      {2, 0}
 #define DRINK_RED       {2, 8}
-#define DRINK_YELLOW    {2, 0}
+#define DRINK_YELLOW    {0, 8}
