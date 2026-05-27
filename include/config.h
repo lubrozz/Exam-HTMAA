@@ -60,5 +60,5 @@ To be used in other files in /src
 // values are in cl per pump (pump1, pump2)
 // 0 = skip this pump
 #define DRINK_BLUE      {2, 0}
-#define DRINK_RED       {0, 4}
+#define DRINK_RED       {2, 8}
 #define DRINK_YELLOW    {2, 0}
