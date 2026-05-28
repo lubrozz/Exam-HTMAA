@@ -15,7 +15,7 @@ static const int sensorPins[4] = {
 };
 
 // Drink recipes: which pump stops are needed (pump 1, 2, 3)
-static const int drinkRecipes[3][3] = {
+static const int drinkRecipes[3][2] = {
   DRINK_BLUE,
   DRINK_RED,
   DRINK_YELLOW
@@ -28,23 +28,18 @@ enum BeltState {
   BELT_WAIT_AT_ICE,
   BELT_AT_ICE,
   BELT_MOVING_TO_PUMP,
-  BELT_AT_PUMP,
-  BELT_DISPENSING,
+  BELT_WAITING_FOR_PUMP,
   BELT_RETURNING_HOME
 };
 
 static BeltState beltState        = BELT_IDLE; // first state of the belt
 static int selectedDrink          = -1; // no drink selected yet, start at -1
-static int currentPumpTarget      = 0;  // which pump stop we're heading to next (1-3)
+static int currentPumpTarget      = 0;  // which pump stop we're heading to next (1-2)
 static unsigned long iceWaitStart = 0;
 static unsigned long iceStartTime = 0;
-bool iceRunning = false;
+static bool iceRunning = false;
+static bool waitingForPumpStart = false;
 
-static unsigned long pumpWaitStart = 0;
-
-bool beltAtPump() {
-  return beltState == BELT_DISPENSING;
-}
 
 int beltCurrentPump() {
   return currentPumpTarget;
@@ -73,6 +68,9 @@ void beltStart(int drinkIndex) {
   selectedDrink    = drinkIndex;
   currentPumpTarget = 0;
   beltState        = BELT_MOVING_TO_ICE;
+  beltStepper.setCurrentPosition(0);
+  Serial.print("Home position: ");
+  Serial.println(beltStepper.currentPosition());
   beltStepper.move(100000); // move until sensor stops it
 }
 
@@ -91,6 +89,8 @@ void beltUpdate() {
       beltStepper.run();
       if (digitalRead(sensorPins[0]) == LOW) {
         beltStepper.stop();
+        Serial.print("Ice position: ");
+        Serial.println(beltStepper.currentPosition());
         beltState    = BELT_WAIT_AT_ICE;
         iceWaitStart = millis();
       }
@@ -100,17 +100,19 @@ void beltUpdate() {
       if (millis() - iceWaitStart >= ICE_WAIT_MS)
       {
         digitalWrite(ICE_MOTOR_PIN, HIGH);
+        Serial.println("Ice dispensing");
         digitalWrite(ICE_SENSOR_LED, HIGH);
         iceRunning   = true;
         iceStartTime = millis();
         beltState = BELT_AT_ICE;
-        break;
       }
+      break;
       
     case BELT_AT_ICE:
       // Wait for ice motor to finish dispensing
       if (iceRunning && millis() - iceStartTime >= ICE_DISPENSE_MS) {
         digitalWrite(ICE_SENSOR_LED, LOW);
+        Serial.println("ice finished");
         digitalWrite(ICE_MOTOR_PIN, LOW);
         iceRunning      = false;
         currentPumpTarget = 1; // move to first pump
@@ -124,25 +126,59 @@ void beltUpdate() {
       if (digitalRead(sensorPins[currentPumpTarget]) == LOW) {
         if (drinkRecipes[selectedDrink][currentPumpTarget - 1] > 0) {
           beltStepper.stop();
-          beltState = BELT_AT_PUMP;
-          pumpWaitStart = millis();
+          int pump = beltCurrentPump();
+          int cl = beltGetRecipeCl(selectedDrink, pump - 1);
+          pumpDispenseCl(pump - 1, cl);
+          Serial.print("Currently pumping for: ");
+          Serial.println(currentPumpTarget);
+          waitingForPumpStart = true;
+          beltState = BELT_WAITING_FOR_PUMP;
         } else {
           // Not needed for this drink, keep moving
           currentPumpTarget++;
-      }
-      if (currentPumpTarget > 3) {
-        // NEED: check if the drink is done or move belt back to past pump
-        // Past all pumps, go home
-        beltStepper.move(BELT_HOME_STEPS);
-        beltState = BELT_RETURNING_HOME;
-      }
+          if (currentPumpTarget > 2) {
+            // NEED: check if the drink is done or move belt back to past pump
+            // Past all pumps, go home
+            beltStepper.moveTo(0);
+            beltState = BELT_RETURNING_HOME;
+          }
+        }
       }
       break;
-    
-    case BELT_AT_PUMP:
-      if (millis() - pumpWaitStart >= PUMP_WAIT_MS )
+
+    case BELT_WAITING_FOR_PUMP:
+      if (waitingForPumpStart) // small delay
       {
-        beltState = BELT_DISPENSING;
+        waitingForPumpStart = false;
+        break; 
+      }
+    
+      if (pumpIdle(currentPumpTarget - 1))
+      {
+        Serial.print("Pump done, currentPumpTarget was: ");
+        Serial.println(currentPumpTarget);
+        currentPumpTarget++;
+        Serial.print("Now: ");
+        Serial.println(currentPumpTarget);
+        if (currentPumpTarget > 2) {
+          Serial.println("Going home");
+          beltStepper.moveTo(0);
+          beltState = BELT_RETURNING_HOME;
+        } else {
+          beltStepper.move(100000);
+          beltState = BELT_MOVING_TO_PUMP;
+        }      
+      }
+      break;
+
+    case BELT_RETURNING_HOME:
+      beltStepper.run();
+      Serial.print("Returning home pos: ");
+      Serial.println(beltStepper.currentPosition());
+      if (beltStepper.distanceToGo() == 0) {
+        Serial.println("I'm home");
+        beltStepper.stop();
+        beltState = BELT_IDLE;
       }
       break;
   }
