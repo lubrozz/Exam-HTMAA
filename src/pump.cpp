@@ -89,3 +89,30 @@ void pumpUpdate() {
     }
   }
 }
+
+void pumpReset() {
+  
+  // Stop stepper movement
+  pump1.stop();
+
+  while (pump1.isRunning()) {
+    pump1.run();
+  }
+
+  // Reset pump states
+  for (int i = 0; i < 2; i++) {
+
+    pumpRunning[i] = false;
+
+    dcStartTime[i] = 0;
+    dcDuration[i] = 0;
+
+    // Turn off DC pumps
+    if (pumpTypes[i] == PUMP_DC) {
+      digitalWrite(dcPins[i], LOW);
+    }
+
+    // Turn off LEDs
+    digitalWrite(hallLedPins[i], LOW);
+  }
+}

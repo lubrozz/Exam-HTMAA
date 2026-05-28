@@ -45,4 +45,4 @@ Find out what the next pump target is
 If no more targets, then start the move to end position
     else, move the belt and set belt state to BELT_MOVING_TO_PUMP
 */
-void beltContinue();
+void beltReset();

@@ -40,6 +40,8 @@ static unsigned long iceStartTime = 0;
 static bool iceRunning = false;
 static bool waitingForPumpStart = false;
 
+static long stepsToHome = 0;
+
 
 int beltCurrentPump() {
   return currentPumpTarget;
@@ -52,6 +54,7 @@ int beltGetRecipeCl(int drink, int pump) {
 void beltInit() {
   beltStepper.setMaxSpeed(BELT_MAXSPEED);
   beltStepper.setAcceleration(BELT_ACCELERATION);
+
 
   pinMode(ICE_SENSOR_PIN, INPUT);
   pinMode(ICE_MOTOR_PIN, OUTPUT);
@@ -71,7 +74,7 @@ void beltStart(int drinkIndex) {
   beltStepper.setCurrentPosition(0);
   Serial.print("Home position: ");
   Serial.println(beltStepper.currentPosition());
-  beltStepper.move(100000); // move until sensor stops it
+  beltStepper.moveTo(100000); // move until sensor stops it
 }
 
 
@@ -97,7 +100,9 @@ void beltUpdate() {
       break;
       
     case BELT_WAIT_AT_ICE:
-      if (millis() - iceWaitStart >= ICE_WAIT_MS)
+      beltStepper.run();
+      if (!beltStepper.isRunning())
+      // if (millis() - iceWaitStart >= ICE_WAIT_MS)
       {
         digitalWrite(ICE_MOTOR_PIN, HIGH);
         Serial.println("Ice dispensing");
@@ -116,7 +121,7 @@ void beltUpdate() {
         digitalWrite(ICE_MOTOR_PIN, LOW);
         iceRunning      = false;
         currentPumpTarget = 1; // move to first pump
-        beltStepper.move(100000);
+        beltStepper.moveTo(100000);
         beltState = BELT_MOVING_TO_PUMP; 
       }
       break;
@@ -124,6 +129,10 @@ void beltUpdate() {
     case BELT_MOVING_TO_PUMP:
       beltStepper.run();
       if (digitalRead(sensorPins[currentPumpTarget]) == LOW) {
+        Serial.print("Sensor ");
+        Serial.print(currentPumpTarget);
+        Serial.print(" at position: ");
+        Serial.println(beltStepper.currentPosition());
         if (drinkRecipes[selectedDrink][currentPumpTarget - 1] > 0) {
           beltStepper.stop();
           int pump = beltCurrentPump();
@@ -139,7 +148,11 @@ void beltUpdate() {
           if (currentPumpTarget > 2) {
             // NEED: check if the drink is done or move belt back to past pump
             // Past all pumps, go home
-            beltStepper.moveTo(0);
+            
+            stepsToHome = beltStepper.currentPosition();
+            beltStepper.stop();
+            Serial.print("Going home with steps (BELT_MOVING_TO_PUMP): -");
+            Serial.println(stepsToHome);
             beltState = BELT_RETURNING_HOME;
           }
         }
@@ -147,6 +160,12 @@ void beltUpdate() {
       break;
 
     case BELT_WAITING_FOR_PUMP:
+      beltStepper.run();
+
+      // Wait until the belt has fully stopped
+      if (beltStepper.isRunning()) {
+        break;
+      }
       if (waitingForPumpStart) // small delay
       {
         waitingForPumpStart = false;
@@ -161,11 +180,15 @@ void beltUpdate() {
         Serial.print("Now: ");
         Serial.println(currentPumpTarget);
         if (currentPumpTarget > 2) {
-          Serial.println("Going home");
+          
+          stepsToHome = beltStepper.currentPosition();
+          beltStepper.stop();
+          Serial.print("Going home with steps (BELT_WAITING_FOR_PUMP): -");
+          Serial.println(stepsToHome);
           beltStepper.moveTo(0);
           beltState = BELT_RETURNING_HOME;
         } else {
-          beltStepper.move(100000);
+          beltStepper.moveTo(100000);
           beltState = BELT_MOVING_TO_PUMP;
         }      
       }
@@ -173,13 +196,47 @@ void beltUpdate() {
 
     case BELT_RETURNING_HOME:
       beltStepper.run();
-      Serial.print("Returning home pos: ");
-      Serial.println(beltStepper.currentPosition());
+      if (beltStepper.isRunning()) {
+        break;
+      }
+
+      beltStepper.run();
+
       if (beltStepper.distanceToGo() == 0) {
         Serial.println("I'm home");
-        beltStepper.stop();
         beltState = BELT_IDLE;
       }
       break;
   }
+}
+
+void beltReset() {
+  
+  // Smoothly stop belt
+  beltStepper.stop();
+
+  while (beltStepper.isRunning()) {
+    beltStepper.run();
+  }
+
+  // Reset stepper coordinates
+  beltStepper.setCurrentPosition(0);
+
+  // Reset state machine
+  beltState = BELT_IDLE;
+
+  selectedDrink = -1;
+  currentPumpTarget = 0;
+
+  iceWaitStart = 0;
+  iceStartTime = 0;
+
+  iceRunning = false;
+  waitingForPumpStart = false;
+
+  stepsToHome = 0;
+
+  // Turn off outputs
+  digitalWrite(ICE_MOTOR_PIN, LOW);
+  digitalWrite(ICE_SENSOR_LED, LOW);
 }

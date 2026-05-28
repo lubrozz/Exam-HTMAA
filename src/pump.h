@@ -27,3 +27,5 @@ finally give the go that pump can run.
 void pumpDispenseCl(int pumpIndex, int cl);
 
 bool pumpIdle(int pumpIndex);
+
+void pumpReset();

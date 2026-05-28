@@ -10,6 +10,17 @@ extern bool startPressed;   // from userInput.cpp
 
 static bool machineRunning = false;
 
+void machineReset() {
+
+  beltReset();
+  pumpReset();
+  userInputReset();
+
+  machineRunning = false;
+  startPressed   = false;
+  selectedDrink  = -1;
+}
+
 
 void setup() {
   /*motorsInit();*/
@@ -37,8 +48,6 @@ void loop() {
 
   // Reset when belt returns home
   if (machineRunning && beltIdle()) {
-    machineRunning = false;
-    startPressed   = false;
-    selectedDrink  = -1;
+    machineReset();
   }
 }

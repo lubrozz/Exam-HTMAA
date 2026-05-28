@@ -15,3 +15,5 @@ When drink button is pressed start blinking green start LED, when start is not p
 If start button is pressed keep the green LED on and update startPressed to true 
 */
 void userInputUpdate();
+
+void userInputReset();

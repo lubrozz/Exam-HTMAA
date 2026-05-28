@@ -26,7 +26,7 @@ void userInputUpdate() {
   for (int i = 0; i < 3; i++) {
     bool currentState = digitalRead(buttons[i]);
 
-    // detect falling edge (HIGH -> LOW = button just pressed)
+    // detect falling edge (LOW -> HIGH = button just pressed)
     if (currentState == HIGH && lastButtonState[i] == LOW) {
       delay(20); // debounce
       if (digitalRead(buttons[i]) == HIGH) {
@@ -70,4 +70,23 @@ void userInputUpdate() {
     }
   }
   lastButtonState[3] = startState;
+}
+
+void userInputReset() {
+
+  selectedDrink = -1;
+  startPressed = false;
+
+  previousMillis = 0;
+  blinkState = false;
+
+  // Reset button history
+  for (int i = 0; i < 4; i++) {
+    lastButtonState[i] = LOW;
+  }
+
+  // Turn off all LEDs
+  for (int i = 0; i < 4; i++) {
+    digitalWrite(leds[i], LOW);
+  }
 }
