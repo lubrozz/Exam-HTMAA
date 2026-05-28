@@ -33,8 +33,9 @@ To be used in other files in /src
 #define ICE_WAIT_MS 500  // how long to wait at ice dispenser in ms
 
 /* ------ STEPPER LIQUID VARIABLES ------ */
-#define STEPS_PER_2CL   5000  // 11000 = PRECISELY 2CL DO NOT CHANGE!!
-#define STEPPER_MAX_SPEED 450
+#define STEPS_PER_2CL   10000  // precisly 2Cl
+#define STEPPER_MAX_SPEED 1000
+#define STEPPER_ACCELERATION 1200
 #define PUMP_WAIT_MS 500
 
 /* ------ PUMP TYPES ------ */
@@ -49,10 +50,10 @@ To be used in other files in /src
 #define LQ1_HALL_LED    24
 
 /* ------ LIQUID #2 (DC Motor) ------ */
-#define LQ2_HALL        7  // TODO: replace with actual pin
-#define LQ2_HALL_LED    26  // TODO: replace with actual pin
-#define LQ2_DC_PIN      8  // TODO: replace with actual pin
-#define DC_MS_PER_CL    500 // TODO: calibrate - ms per cl for DC motor
+#define LQ2_HALL        7 
+#define LQ2_HALL_LED    26
+#define LQ2_DC_PIN      8 
+#define DC_MS_PER_CL    40000
 
 
 /* ------ DRINK RECIPES ------ */
@@ -60,4 +61,4 @@ To be used in other files in /src
 // 0 = skip this pump
 #define DRINK_BLUE      {2, 0}
 #define DRINK_RED       {2, 8}
-#define DRINK_YELLOW    {0, 8}
+#define DRINK_YELLOW    {0, 4}
