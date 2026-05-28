@@ -16,25 +16,24 @@ To be used in other files in /src
 /* ------ BELT STEPPER ------ */
 #define BELT_STEP 9
 #define BELT_DIR 10
-#define BELT_ACCELERATION 500
-#define BELT_MAXSPEED 1000
+#define BELT_ACCELERATION 300
+#define BELT_MAXSPEED 800
 
 /* ------ BELT SENSOR PINS ------ */
 #define BELT_SENSOR_0     3
 #define BELT_SENSOR_1     4   // LQ1_HALL (shared with pump 1)
 #define BELT_SENSOR_2     7  // LQ2_HALL (shared with pump 2) TODO: replace XX with actual pin
 #define BELT_SENSOR_3     13  // LQ3_HALL (shared with pump 3) TODO: replace XX with actual pin
-#define BELT_HOME_STEPS   5000 // steps from sensor 3 to home position
 
 /* ------ ICE DISPENSER ------ */
 #define ICE_SENSOR_PIN    3
 #define ICE_SENSOR_LED    22
 #define ICE_MOTOR_PIN     2
-#define ICE_DISPENSE_MS   4000 // how long to run ice motor in ms
+#define ICE_DISPENSE_MS   750 // how long to run ice motor in ms
 #define ICE_WAIT_MS 500  // how long to wait at ice dispenser in ms
 
 /* ------ STEPPER LIQUID VARIABLES ------ */
-#define STEPS_PER_2CL   11000  // PRECISELY 2CL DO NOT CHANGE!!
+#define STEPS_PER_2CL   5000  // 11000 = PRECISELY 2CL DO NOT CHANGE!!
 #define STEPPER_MAX_SPEED 450
 #define PUMP_WAIT_MS 500
 
