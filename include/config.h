@@ -16,7 +16,7 @@ To be used in other files in /src
 /* ------ BELT STEPPER ------ */
 #define BELT_STEP 9
 #define BELT_DIR 10
-#define BELT_ACCELERATION 300
+#define BELT_ACCELERATION 1800
 #define BELT_MAXSPEED 800
 
 /* ------ BELT SENSOR PINS ------ */
