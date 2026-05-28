@@ -37,7 +37,7 @@ bool pumpIdle(int pumpIndex) {
 void pumpInit() {
   // Init stepper pumps
   pump1.setMaxSpeed(STEPPER_MAX_SPEED);
-  pump1.setAcceleration(500);
+  pump1.setAcceleration(STEPPER_ACCELERATION);
 
   // Init pins
   for (int i = 0; i < 2; i++) {
@@ -76,6 +76,10 @@ void pumpUpdate() {
 
       AccelStepper* stepper = (i == 0) ? &pump1 : nullptr;
       if (stepper && stepper->distanceToGo() == 0) {
+        unsigned long elapsed = millis() - 0;
+        Serial.print("Stepper pump finished in: ");
+        Serial.print(elapsed);
+        Serial.println("ms");
         pumpRunning[i] = false;
       }
     }
@@ -83,6 +87,10 @@ void pumpUpdate() {
     // ---- Run DC pumps ----
     if (pumpRunning[i] && pumpTypes[i] == PUMP_DC) {
       if (millis() - dcStartTime[i] >= dcDuration[i]) {
+        unsigned long elapsed = millis() - 0;
+        Serial.print("DC pump finished in: ");
+        Serial.print(elapsed);
+        Serial.println("ms");
         digitalWrite(dcPins[i], LOW);
         pumpRunning[i] = false;
       }
