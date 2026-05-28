@@ -151,6 +151,7 @@ void beltUpdate() {
             
             stepsToHome = beltStepper.currentPosition();
             beltStepper.stop();
+            beltStepper.moveTo(0);
             Serial.print("Going home with steps (BELT_MOVING_TO_PUMP): -");
             Serial.println(stepsToHome);
             beltState = BELT_RETURNING_HOME;
