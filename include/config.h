@@ -34,8 +34,8 @@ To be used in other files in /src
 
 /* ------ STEPPER LIQUID VARIABLES ------ */
 #define STEPS_PER_2CL   10000  // precisly 2Cl
-#define STEPPER_MAX_SPEED 1000
-#define STEPPER_ACCELERATION 1200
+#define STEPPER_MAX_SPEED 800
+#define STEPPER_ACCELERATION 1000
 #define PUMP_WAIT_MS 500
 
 /* ------ PUMP TYPES ------ */
@@ -53,12 +53,12 @@ To be used in other files in /src
 #define LQ2_HALL        7 
 #define LQ2_HALL_LED    26
 #define LQ2_DC_PIN      8 
-#define DC_MS_PER_CL    40000
+#define DC_MS_PER_CL    10000
 
 
 /* ------ DRINK RECIPES ------ */
 // values are in cl per pump (pump1, pump2)
 // 0 = skip this pump
 #define DRINK_BLUE      {2, 0}
-#define DRINK_RED       {2, 8}
+#define DRINK_RED       {2, 1}
 #define DRINK_YELLOW    {0, 4}
